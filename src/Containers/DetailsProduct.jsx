@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetData } from '../Peticiones/axios';
 import { urlComida } from '../helpers/urls';
-import { DivContadorCart, DivSabores, DivTituloPrecio, PrecioDeDetails, TituloDeDetails } from '../Components/StyleComponentsDetails';
+import { BotonAgregarCarrito, ContenedorItemsExtra, DivBotonAgregarCarrito, DivContadorCart, DivItemsExtra, DivSabores, DivTituloPrecio, ParrafoTitulo, PrecioDeDetails, TextoItemsExtra, TituloDeDetails, Titulos } from '../Components/StyleComponentsDetails';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import useProducts from '../Hooks/useProducts';
 
@@ -10,13 +10,7 @@ function DetailsProduct() {
 
     const { id } = useParams();
     const [dataProduct, setDataProduct] = useState();
-    const {
-        data,
-        categoriaData,
-        dataSelectProduct,
-        handleCambiarC,
-        handleCambiarP,
-    } = useProducts();
+    const {data} = useProducts();
     
     const navigate = useNavigate();
 
@@ -41,12 +35,23 @@ function DetailsProduct() {
     }
     };
 
+    //extras
+    const [selectedItems, setSelectedItems] = useState([]); //selectedItems es la informacion de los productos extras seleccionados
+
+    const handleClick = (item) => {
+        setSelectedItems((prevSelectedItems) =>
+            prevSelectedItems.includes(item)
+            ? prevSelectedItems.filter((i) => i !== item)
+            : [...prevSelectedItems, item]
+        );
+    };
+
     return (
         <div>
             <div style={{display: "flex", width: "100%", justifyContent: "space-between"}}>
-                <img style={{width: 24,height: 24, objectFit: "contain"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705706634/Guajolota/chevron-left_piq1vb.png' alt=''></img>
+                <img onClick={() => {navigate("/")}} style={{width: 24,height: 24, objectFit: "contain", cursor: "pointer"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705706634/Guajolota/chevron-left_piq1vb.png' alt=''></img>
                 <img style={{width: 165.833, height: 155.865, objectFit: "contain"}} src={dataProduct?.imagen} alt=''></img>
-                <img style={{width: 24 ,height: 24, objectFit: "contain"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705961405/Guajolota/Group_66_ughrn8.png' alt=''></img>
+                <img onClick={() => {navigate("/cart")}} style={{width: 24 ,height: 24, objectFit: "contain", cursor: "pointer"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705961405/Guajolota/Group_66_ughrn8.png' alt=''></img>
             </div>
             <DivTituloPrecio>
                 <TituloDeDetails>{dataProduct?.nombre_completo}</TituloDeDetails>
@@ -59,38 +64,107 @@ function DetailsProduct() {
                     <PlusCircleOutlined onClick={() => handlePlusCarrito()} />
                 </DivContadorCart>
             </div>
+            <Titulos style={{marginBottom: 24}}>Sabor</Titulos>
             <div>
-              <h3>Sabor</h3>
-              <DivSabores>
-                {data?.filter((item) => item?.categoria === dataProduct?.categoria).map(
-                    (item, index) => {
-                    const opacity = item.id === dataProduct.id ? 1 : 0.2;
-                            return (
-                                <img
-                                style={{ cursor: "pointer", width: 64, height: 69, opacity }}
-                                alt=""
-                                src={item.sabor_imagen}
-                                key={index}
-                                onClick={() => navigate(`/datails-products/${item.id}`)}
-                                />
-                            );
-                    }
-                )}
-              </DivSabores>
+                <DivSabores>
+                    {data?.filter((item) => item?.categoria === dataProduct?.categoria).map(
+                        (item, index) => {
+                        const opacity = item.id === dataProduct.id ? 1 : 0.2;
+                                return (
+                                    <img
+                                    style={{ cursor: "pointer", width: 64, height: 69, opacity }}
+                                    alt=""
+                                    src={item.sabor_imagen}
+                                    key={index}
+                                    onClick={() => navigate(`/datails-products/${item.id}`)}
+                                    />
+                                );
+                        }
+                    )}
+                </DivSabores>
             </div>
-            <div>
-            <h3>Guajalocombo</h3>
-                {dataProduct?.categoria === "guajolotas" && dataProduct?.categoria === "tamales" && (
+            <div style={{marginTop: 40}}>
+                {dataProduct?.categoria === "guajolotas" && (
                     <div>
-                    <p>This product is part of a Guajalocombo!</p>
+                        <Titulos>Guajolocombo</Titulos>
+                        <ParrafoTitulo>Selecciona la bebida que más te guste y disfruta de tu desayuno.</ParrafoTitulo>
+                    </div>
+                    
+                )}
+                {dataProduct?.categoria === "bebidas" && (
+                    <div>
+                        <Titulos>Guajolocombo</Titulos>
+                        <ParrafoTitulo>Selecciona la torta que más te guste y disfruta de tu desayuno.</ParrafoTitulo>
                     </div>
                 )}
-                {!(dataProduct?.categoria === "guajolotas" && dataProduct?.categoria === "tamales") && (
+                {dataProduct?.categoria === "tamales" && (
                     <div>
-                    <p>This product is not part of a Guajalocombo.</p>
+                        <Titulos style={{marginBottom: 8}}>Bebidas</Titulos>
+                        <ParrafoTitulo>Selecciona la bebida que más te guste y disfruta de tu desayuno.</ParrafoTitulo>
                     </div>
                 )}
             </div>
+            <ContenedorItemsExtra style={{marginBottom: 75}}>
+                {
+                    dataProduct?.categoria === "guajolotas" || dataProduct?.categoria === "tamales" ? (
+                        data?.map((item, index) => {
+                            if (item.categoria === 'bebidas'){
+                                return (
+                                    <DivItemsExtra  onClick={() => handleClick(item)} key={index}>
+                                        <div style={{display: "flex", width: "100%" ,justifyContent: "space-between"}}>
+                                            <img src={item.imagen} style={{width: 64, height: 64, objectFit: "contain"}} alt=''></img>
+                                            <img
+                                                src={selectedItems.includes(item)
+                                                ? 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/check-square_fosngl.png'
+                                                : 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/square_zy5mzl.png'}
+                                                style={{ width: 24, height: 24 }}
+                                                alt=""
+                                            />
+                                        </div>
+                                        <div>
+                                            <TextoItemsExtra>{item.nombre}</TextoItemsExtra>
+                                            <TextoItemsExtra style={{color: "#FA4A0C"}}>+ ${item.precio} MXN</TextoItemsExtra>
+                                        </div>
+                                    </DivItemsExtra>
+                                );
+                            }
+                            return null;
+                        })
+                    ) : (
+                        data?.map((item, index) => {
+                            if (item.categoria === 'tamales'){
+                                return (
+                                    <DivItemsExtra  onClick={() => handleClick(item)} key={index}>
+                                        <div style={{display: "flex", width: "100%" ,justifyContent: "space-between"}}>
+                                            <img src={item.imagen} style={{width: 64, height: 64, objectFit: "contain"}} alt=''></img>
+                                            <img
+                                                src={selectedItems.includes(item)
+                                                ? 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/check-square_fosngl.png'
+                                                : 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/square_zy5mzl.png'}
+                                                style={{ width: 24, height: 24 }}
+                                                alt=""
+                                            />
+                                        </div>
+                                        <div>
+                                            <TextoItemsExtra>{item.nombre}</TextoItemsExtra>
+                                            <TextoItemsExtra style={{color: "#FA4A0C"}}>+ ${item.precio} MXN</TextoItemsExtra>
+                                        </div>
+                                    </DivItemsExtra>
+                                );
+                            }
+                            return null;
+                        })
+                    )
+                }
+            </ContenedorItemsExtra>
+            <DivBotonAgregarCarrito>
+                <BotonAgregarCarrito>
+                    <p style={{ margin: 0 }}>Agregar {contCarrito} al carrito</p>
+                    <p style={{ margin: 0 }}>
+                        ${dataProduct?.precio * contCarrito}.00
+                    </p>
+                </BotonAgregarCarrito>
+            </DivBotonAgregarCarrito>
         </div>
     )
 }

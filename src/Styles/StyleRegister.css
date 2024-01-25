@@ -1,0 +1,16 @@
+.indexBody {
+    margin: 0
+}
+
+#root {
+    height: 100%;
+}
+
+.App {
+    height: 100%;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #FA4A0C;
+    border-color: #FA4A0C;
+}

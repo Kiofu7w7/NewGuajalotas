@@ -1,18 +1,12 @@
 import React, { useState } from 'react'
 import { DivCategoria, ItemCategorias, NavBarDiv, SearchDiv, SearchInput, TarjetaBlanca, TextPrecioTarjeta, TextTarjeta } from '../Components/StyleComponentsHome'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, UserOutlined } from '@ant-design/icons'
 import useProducts from '../Hooks/useProducts';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
 
-    const {
-    data,
-    categoriaData,
-    dataSelectProduct,
-    handleCambiarC,
-    handleCambiarP,
-    } = useProducts();
+    const {data} = useProducts();
 
     const [selectedCategoria, setSelectedCategoria] = useState("guajolotas");
     const navigate = useNavigate();
@@ -22,21 +16,22 @@ function Home() {
     <div>
         <header>
             <NavBarDiv>
-                <img style={{width: "100px", height: "100px", objectFit: "contain"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705378408/Guajolota/363f139aa7086e67976c63e2eea1fb1c_kn7onm.png' alt=''></img>
-                <img src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705961405/Guajolota/Group_66_ughrn8.png' style={{width: 24,height: 24,}} alt=''></img>
+                <img onClick={() => {navigate("/")}} style={{width: "100px", height: "100px", objectFit: "contain", cursor: "pointer"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705378408/Guajolota/363f139aa7086e67976c63e2eea1fb1c_kn7onm.png' alt=''></img>
+                <UserOutlined onClick={() => {navigate("/sigin")}} />
+                <img onClick={() => {navigate("/cart")}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705961405/Guajolota/Group_66_ughrn8.png' style={{width: 24,height: 24, cursor: "pointer"}} alt=''></img>
             </NavBarDiv>
             <h1
             style={{
-              width: "auto",
-              minWidth: "250px", 
-              fontSize: 34,
-              fontWeight: 700,
-              fontFamily: "Inter",
+                width: "auto",
+                minWidth: "250px", 
+                fontSize: 34,
+                fontWeight: 700,
+                fontFamily: "Inter",
             }}
             >
                 Nada como una Guajolota para empezar el día
             </h1>
-            <SearchDiv>
+            <SearchDiv onClick={() => { navigate("/search") }}>
                 <SearchOutlined />
                 <SearchInput placeholder="Sabor de guajolota, bebida..."></SearchInput>
             </SearchDiv>
