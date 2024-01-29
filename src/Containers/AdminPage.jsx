@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
-import { Avatar, Card, Col, Layout, Menu, Row, theme } from 'antd';
+import { Avatar, Card, Col, Layout, Menu, Modal, Row, theme } from 'antd';
 import {
     DeleteOutlined,
     EditOutlined,
     EllipsisOutlined,
-    SettingOutlined,
 } from '@ant-design/icons';
 import Meta from 'antd/es/card/Meta';
 import useProducts from '../Hooks/useProducts';
 import PopUpDetails from '../Components/AdminComponents/PopUpDetails';
 import PopUpEdit from '../Components/AdminComponents/PopUpEdit';
 import PopUpConfig from '../Components/AdminComponents/PopUpConfig';
+import { WarningOutlined } from '@ant-design/icons';
+import { DeleteDataUsersCarts } from '../Peticiones/axios';
+import { urlComida } from '../helpers/urls';
+const { confirm } = Modal;
+
 const { Header, Content, Sider } = Layout;
 const items1 = [
     {
@@ -32,7 +36,7 @@ function AdminPage() {
     const [collapsed, setCollapsed] = useState(false);
     const [popUpOpenDetails, setPopUpOpenDetails] = useState(false);
     const [popUpOpenEdit, setPopUpOpenEdit] = useState(false);
-    const [popUpOpenConfig, setPopUpOpenConfig] = useState(false);
+    const [popUpOpenDelete, setPopUpOpenDelete] = useState(false);
     const [categoria, setCategoria] = useState("all")
     const [itemSelect, setItemSelect] = useState();
     const {
@@ -52,10 +56,27 @@ function AdminPage() {
         setItemSelect(item)
     }
 
-    const handleConfig = (item) => {
-        setPopUpOpenConfig(true)
+    const handleDelete = (item) => {
+        setPopUpOpenDelete(true)
         setItemSelect(item)
     }
+
+    const showDeleteConfirm = (c) => {
+        confirm({
+            title: '¿Estas seguro de eliminar este producto?',
+            icon: <WarningOutlined />,
+            content: `Borraras ${c.nombre_completo} con la ID: ${c.id}`,
+            okText: 'Si',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk() {
+                DeleteDataUsersCarts(urlComida, c.id)
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
 
     return (
         <Layout style={{minHeight: "100vh"}}>
@@ -82,8 +103,11 @@ function AdminPage() {
             <Layout>
                 <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                     <Menu theme="dark" mode="inline">
+                        <Menu.Item key={0} onClick={() => { setCategoria("all") }}>
+                            <span style={{ textTransform: "capitalize" }} >all</span>
+                        </Menu.Item>
                         {categoriasData?.map((a, index) => (
-                            <Menu.Item key={index} onClick={() => { setCategoria (a)}}> 
+                            <Menu.Item key={index+1} onClick={() => { setCategoria (a)}}> 
                                 <span style={{ textTransform: "capitalize" }} >{a}</span> 
                             </Menu.Item>
                         ))}
@@ -125,7 +149,7 @@ function AdminPage() {
                                             actions={[
                                                 <EllipsisOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
                                                 <EditOutlined style={{ backgroundColor: "#faea0c" }} onClick={() => handleEdit(item)} key="edit" />,
-                                                <DeleteOutlined style={{ backgroundColor: "red" }} onClick={() => handleConfig(item)} key="setting" />,
+                                                <DeleteOutlined style={{ backgroundColor: "red" }} onClick={() => showDeleteConfirm(item)} key="setting" />,
                                             ]}
                                         >
                                             <Meta
@@ -147,12 +171,18 @@ function AdminPage() {
                                             <img
                                                 alt="productImage"
                                                 src={item.imagen}
+                                                style={{
+                                                    backgroundImage: `url(${item.plato})`,
+                                                    backgroundPosition: "center 60px",
+                                                    backgroundSize: "contain",
+                                                    backgroundRepeat: "no-repeat",
+                                                }}
                                             />
                                         }
                                         actions={[
-                                            <SettingOutlined onClick={() => handleConfig(item)} key="setting" />,
-                                            <EditOutlined onClick={() => handleEdit(item)} key="edit" />,
                                             <EllipsisOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
+                                            <EditOutlined style={{ backgroundColor: "#faea0c" }} onClick={() => handleEdit(item)} key="edit" />,
+                                            <DeleteOutlined style={{ backgroundColor: "red" }} onClick={() => showDeleteConfirm(item)} key="setting" />,
                                         ]}
                                     >
                                         <Meta
@@ -165,7 +195,7 @@ function AdminPage() {
                             ))}
                             {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => setPopUpOpenDetails(false)} />}
                             {popUpOpenEdit && <PopUpEdit item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
-                            {popUpOpenConfig && <PopUpConfig item={itemSelect} onClose={() => setPopUpOpenConfig(false)} />}
+                            {popUpOpenDelete && <PopUpConfig item={itemSelect} onClose={() => setPopUpOpenDelete(false)} />}
                         </Row>
 
                     </Content>
