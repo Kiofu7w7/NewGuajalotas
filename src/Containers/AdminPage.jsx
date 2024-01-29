@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Avatar, Card, Col, Layout, Menu, Row, theme } from 'antd';
 import {
+    DeleteOutlined,
     EditOutlined,
     EllipsisOutlined,
     SettingOutlined,
@@ -122,9 +123,9 @@ function AdminPage() {
                                                 />
                                             }
                                             actions={[
-                                                <SettingOutlined onClick={() => handleConfig(item)} key="setting" />,
-                                                <EditOutlined onClick={() => handleEdit(item)} key="edit" />,
                                                 <EllipsisOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
+                                                <EditOutlined style={{ backgroundColor: "#faea0c" }} onClick={() => handleEdit(item)} key="edit" />,
+                                                <DeleteOutlined style={{ backgroundColor: "red" }} onClick={() => handleConfig(item)} key="setting" />,
                                             ]}
                                         >
                                             <Meta

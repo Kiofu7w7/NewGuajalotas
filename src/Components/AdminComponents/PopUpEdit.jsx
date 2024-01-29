@@ -1,5 +1,5 @@
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input, InputNumber, Modal, Popconfirm, Select, Typography, Upload } from 'antd';
+import { Input, InputNumber, Modal, Popconfirm, Select, Typography, Upload, message } from 'antd';
 import React, { useState } from 'react'
 import { uploadFile } from '../../helpers/uploadFiles';
 import { DivFlexSpaceA } from './StyledComponents/Components';
@@ -13,9 +13,18 @@ function PopUpEdit(props) {
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(item.imagen);
     const [imagePlatoUrl, setImagePlatoUrl] = useState(item.plato);
-
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
+    
+    const success = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'Producto editado con exito',
+            duration: 4,
+        });
+    };
+
     const showPopconfirm = () => {
         setOpen(true);
     };
@@ -26,6 +35,7 @@ function PopUpEdit(props) {
             setConfirmLoading(false);
             onClose();
             await PatchDataUsersCarts(urlComida, produc.id, produc)
+            success()
         }, 2000);
     };
 
@@ -87,6 +97,7 @@ function PopUpEdit(props) {
             width={800}
             maskClosable={false}
         >
+            {contextHolder}
             <DivFlexSpaceA style={{justifyContent: "space-between"}}>
                 <div>
                     <Typography.Title level={5}>Nombre completo del producto:</Typography.Title>
