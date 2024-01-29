@@ -114,6 +114,11 @@ function AdminPage() {
                                                 <img
                                                     alt="productImage"
                                                     src={item.imagen}
+                                                    style={{
+                                                        backgroundImage: `url(${item.plato})`,
+                                                        backgroundPosition: "center 60px",
+                                                        backgroundSize: "contain",
+                                                        backgroundRepeat: "no-repeat",}}
                                                 />
                                             }
                                             actions={[
@@ -158,7 +163,7 @@ function AdminPage() {
                                 </Col>
                             ))}
                             {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => setPopUpOpenDetails(false)} />}
-                            {popUpOpenEdit && <PopUpEdit item={itemSelect} onClose={() => setPopUpOpenEdit(false)} />}
+                            {popUpOpenEdit && <PopUpEdit item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
                             {popUpOpenConfig && <PopUpConfig item={itemSelect} onClose={() => setPopUpOpenConfig(false)} />}
                         </Row>
 
