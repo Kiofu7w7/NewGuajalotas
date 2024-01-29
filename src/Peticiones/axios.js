@@ -1,4 +1,6 @@
 import axios from "axios"
+import { urlCarritos } from "../helpers/urls";
+
 
 export const GetData = async (url) => {
     try {
@@ -76,4 +78,34 @@ export const DeleteDataUsersCarts = async (url, id) => {
     } catch (error) {
         return { status: "error", message: error.message };
     }
+};
+
+export const AgregarItemCarrito = async (id, idProducto, cant) => {
+  try {
+    const resp = await axios.get(`${urlCarritos}/${id}`);
+    const idProductsArray = resp.data.id_products.split("|");
+
+    const newProp = idProductsArray.map((item, index) => {
+      let itemSplit = item.split(":");
+
+      if (parseInt(itemSplit[0]) === parseInt(idProducto)) {
+        itemSplit[1] = cant.toString();
+        return itemSplit.join(":");
+      } else {
+        return item;
+      }
+    });
+
+    if (!newProp.some((item) => item.startsWith(idProducto.toString()))) {
+      newProp.push(`${idProducto}:${cant}`); 
+    }
+
+    resp.data.id_products = newProp.join("|");
+    console.log(resp.data.id_products)
+    //await axios.put(`${urlCarritos}/${id}`, resp.data); // Update server
+
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
 };

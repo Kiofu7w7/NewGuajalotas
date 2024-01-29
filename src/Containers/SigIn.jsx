@@ -1,15 +1,29 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd';
-import { DivFondoDifumi, DivFondoSVG } from '../Components/StyleComponentsSignRegister';
+import { DivFondoDifumi } from '../Components/StyleComponentsSignRegister';
 import "../Styles/StyleSigIn.css"
 import { Link, useNavigate } from 'react-router-dom';
+import { UserContext } from '../Hooks/userContext';
+import { FondoContainer } from '../Components/StyleCompPasarela';
 
 function SigIn() {
 
+    const objNew = {
+        "id": 2,
+        "email": "patatas123@gmail.com",
+        "password": "panseroti",
+        "cellphone": "123435112",
+        "name": "Pepito",
+        "last_name": "Perez",
+        "id_carts": 1
+    }
+    const { setUser } = useContext(UserContext)
+    
     const navigate = useNavigate();
 
     const onFinish = (values) => {
         console.log('Success:', values);
+        setUser(objNew)
         navigate("/");
     };
 
@@ -18,7 +32,7 @@ function SigIn() {
     };
 
     return (
-        <DivFondoSVG>
+        <FondoContainer style={{width: "100%"}}>
             <DivFondoDifumi>
                 <Form
                     name="basic"
@@ -104,7 +118,7 @@ function SigIn() {
                     </Form.Item>
                 </Form>
             </DivFondoDifumi>
-        </DivFondoSVG>
+        </FondoContainer>
     )
 }
 

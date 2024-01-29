@@ -1,49 +1,95 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
-import { GetData } from '../Peticiones/axios';
+import { AgregarItemCarrito, GetData } from '../Peticiones/axios';
 import { urlComida } from '../helpers/urls';
 import { BotonAgregarCarrito, ContenedorItemsExtra, DivBotonAgregarCarrito, DivContadorCart, DivItemsExtra, DivSabores, DivTituloPrecio, ParrafoTitulo, PrecioDeDetails, TextoItemsExtra, TituloDeDetails, Titulos } from '../Components/StyleComponentsDetails';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import useProducts from '../Hooks/useProducts';
+import { UserContext } from '../Hooks/userContext';
 
 function DetailsProduct() {
 
     const { id } = useParams();
-    const [dataProduct, setDataProduct] = useState();
     const {data} = useProducts();
+    const { user } = useContext(UserContext)
+    const [dataProduct, setDataProduct] = useState();
+    const [total, setTotal] = useState(0)
+    const [contCarrito, setContCarrito] = useState(1);
+    const [extraItems, setExtraItems] = useState([]);     //selectedItems es la informacion de los productos extras seleccionados
     
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function movie() {
-          const resp = await GetData(`${urlComida}/${id}`);
-          setDataProduct(resp);
+        async function fetchData() {
+            try {
+                const resp = await GetData(`${urlComida}/${id}`);
+                setDataProduct(resp);
+            } catch (error) {
+                console.error("Error fetching data or calculating total:", error);
+            }
         }
-        movie();
+        fetchData();
     }, [id]);
 
+    useEffect(() => {
+        setTotal(dataProduct?.precio)
+    }, [dataProduct])
+
     //CONTADOR CANTIDAD
-    const [contCarrito, setContCarrito] = useState(1);
 
     const handlePlusCarrito = () => {
     setContCarrito(contCarrito + 1)
+    setTotal(total + dataProduct?.precio)
     }
 
     const handleMinusCarrito = () => {
     if(contCarrito !== 1){
         setContCarrito(contCarrito - 1);
+        setTotal(total - dataProduct?.precio)
     }
     };
 
     //extras
-    const [selectedItems, setSelectedItems] = useState([]); //selectedItems es la informacion de los productos extras seleccionados
 
     const handleClick = (item) => {
-        setSelectedItems((prevSelectedItems) =>
-            prevSelectedItems.includes(item)
-            ? prevSelectedItems.filter((i) => i !== item)
-            : [...prevSelectedItems, item]
-        );
+        setExtraItems((prevSelectedItems) => {
+            const updatedSelectedItems = prevSelectedItems.includes(item)
+                ? prevSelectedItems.filter((i) => i !== item)
+                : [...prevSelectedItems, item];
+
+            setTotal((prevTotal) =>
+                prevSelectedItems.includes(item)
+                    ? prevTotal - item.precio 
+                    : prevTotal + item.precio 
+            );
+
+            return updatedSelectedItems;
+        });
+    };
+
+    //PETICIONES PARA AGREGAR AL CARRITO
+
+    const handleComprar = async () => {
+        try {
+            await enviarProducto(dataProduct.id, contCarrito);
+            if (extraItems) {
+                await Promise.all(
+                    extraItems.map(async (item) => {
+                        await enviarProducto(item.id, 1);
+                    })
+                );
+            }
+        } catch (error) {
+            throw error
+        }
+    };
+
+    const enviarProducto = async (pId, pCant) => {
+        try {
+            await AgregarItemCarrito(user.id_carts, pId, pCant);
+        } catch (error) {
+            throw error; 
+        }
     };
 
     return (
@@ -76,7 +122,11 @@ function DetailsProduct() {
                                     alt=""
                                     src={item.sabor_imagen}
                                     key={index}
-                                    onClick={() => navigate(`/datails-products/${item.id}`)}
+                                    onClick={() => {
+                                        setContCarrito(1);
+                                        setExtraItems([]);
+                                        navigate(`/datails-products/${item.id}`)
+                                    }}
                                     />
                                 );
                         }
@@ -114,7 +164,7 @@ function DetailsProduct() {
                                         <div style={{display: "flex", width: "100%" ,justifyContent: "space-between"}}>
                                             <img src={item.imagen} style={{width: 64, height: 64, objectFit: "contain"}} alt=''></img>
                                             <img
-                                                src={selectedItems.includes(item)
+                                                src={extraItems.includes(item)
                                                 ? 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/check-square_fosngl.png'
                                                 : 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/square_zy5mzl.png'}
                                                 style={{ width: 24, height: 24 }}
@@ -138,7 +188,7 @@ function DetailsProduct() {
                                         <div style={{display: "flex", width: "100%" ,justifyContent: "space-between"}}>
                                             <img src={item.imagen} style={{width: 64, height: 64, objectFit: "contain"}} alt=''></img>
                                             <img
-                                                src={selectedItems.includes(item)
+                                                src={extraItems.includes(item)
                                                 ? 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/check-square_fosngl.png'
                                                 : 'https://res.cloudinary.com/dlwr6vxib/image/upload/v1705788000/Guajolota/square_zy5mzl.png'}
                                                 style={{ width: 24, height: 24 }}
@@ -157,11 +207,11 @@ function DetailsProduct() {
                     )
                 }
             </ContenedorItemsExtra>
-            <DivBotonAgregarCarrito>
+            <DivBotonAgregarCarrito onClick={() => {handleComprar()}}>
                 <BotonAgregarCarrito>
                     <p style={{ margin: 0 }}>Agregar {contCarrito} al carrito</p>
                     <p style={{ margin: 0 }}>
-                        ${dataProduct?.precio * contCarrito}.00
+                        ${total}.00
                     </p>
                 </BotonAgregarCarrito>
             </DivBotonAgregarCarrito>

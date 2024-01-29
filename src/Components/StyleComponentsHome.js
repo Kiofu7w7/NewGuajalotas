@@ -88,3 +88,29 @@ export const ItemCategorias = styled.p`
     
   }
 `
+
+export const CarritoImg = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const DivIconB = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
+export const SearchP = styled.p`
+  text-align: center;
+  font-family: Inter;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+`

@@ -6,7 +6,8 @@ import {
     Select,
 } from 'antd';
 import "../Styles/StyleRegister.css"
-import { DivFondoDifumi, DivFondoSVG } from '../Components/StyleComponentsSignRegister';
+import { DivFondoDifumi } from '../Components/StyleComponentsSignRegister';
+import { FondoContainer } from '../Components/StyleCompPasarela';
 
 const { Option } = Select;
 
@@ -62,7 +63,7 @@ function Register() {
     );
 
     return (
-        <DivFondoSVG>
+        <FondoContainer style={{width: "100%"}}>
             <DivFondoDifumi>
                 <Form
                     {...formItemLayout}
@@ -203,7 +204,7 @@ function Register() {
                     </Form.Item>
                 </Form>
             </DivFondoDifumi>
-        </DivFondoSVG>
+        </FondoContainer>
     )
 }
 

@@ -6,6 +6,8 @@ import Cart from "../Containers/Cart";
 import Search from "../Containers/Search";
 import SigIn from "../Containers/SigIn";
 import Register from "../Containers/Register";
+import Pasarela from "../Containers/Pasarela";
+import AdminPage from "../Containers/AdminPage";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/search" element={<Search />}></Route>
           <Route path="/sigin" element={<SigIn />}></Route>
           <Route path="/register" element={<Register />}></Route>
+          <Route path="/pasarela" element={<Pasarela />}></Route>
+          <Route path="/adminPage" element={<AdminPage />}></Route>
           <Route path="*" element={<NothingHere />}></Route>
         </Routes>
       </BrowserRouter>

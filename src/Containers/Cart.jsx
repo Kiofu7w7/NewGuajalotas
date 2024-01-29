@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import useUser from '../Hooks/useUser'
 import { useNavigate } from 'react-router-dom';
 import { ButtonAS, CartItemText, CartPriceText, CartTotalDiv, DivButtonAS, DivContadorCart, ImagenProducto, NoCartItemsIcon, TextButtonAS, TitlePages } from '../Components/StyleComponentsCart';
 import { Modal } from 'antd';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { AgregarItemCarrito } from '../Peticiones/axios';
+import { UserContext } from '../Hooks/userContext';
 
 function Cart() {
 
     const { cartItems, productNumbers } = useUser();
+    const { user } = useContext(UserContext)
 
     let total = 0;
     cartItems.map((a, index) => total += a.precio * productNumbers[index])
@@ -16,20 +19,21 @@ function Cart() {
 
     const [open, setOpen] = useState(false);
     const [dataProdcuto, setDataProducto] = useState()
-    const [dataProdcutoCant, setDataProductoCant] = useState()
+
     const showModal = (item, cant) => {
         setOpen(true);
         setDataProducto(item)
-        setDataProductoCant(cant)
         setContCarrito(parseInt(cant))
     };
-    const handleOk = (e) => {
-        console.log(e)
+    const handleOk = (cant, producto) => {
+        console.log(cant, producto.id)
+        AgregarItemCarrito(user.id_carts, producto.id, cant)
         setOpen(false);
     };
     const handleCancel = (e) => {
         console.log(e);
         setOpen(false);
+        console.warn(cartItems)
     };
 
     const [contCarrito, setContCarrito] = useState(1);
@@ -74,6 +78,7 @@ function Cart() {
                     <div style={{ width: "100%", cursor: "pointer" }}>
                         {cartItems.map((item, index) => (
                             <div
+                                key={index}
                                 style={{
                                     display: "flex",
                                     width: "100%",
@@ -135,14 +140,14 @@ function Cart() {
                     </div>
 
                     <DivButtonAS style={{ display: "flex", backdropFilter: 0 }}>
-                        <ButtonAS>
+                        <ButtonAS onClick={() => { navigate('/pasarela')}}>
                             <TextButtonAS>Pagar</TextButtonAS>
                         </ButtonAS>
                     </DivButtonAS>
 
                     <Modal
                         open={open}
-                        onOk={handleOk}
+                        onOk={() => handleOk(contCarrito, dataProdcuto)}
                         onCancel={handleCancel}
                         okText="Actualizar"
                         okButtonProps={{
