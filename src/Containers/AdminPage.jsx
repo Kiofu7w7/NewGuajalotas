@@ -36,7 +36,7 @@ function AdminPage() {
     const [collapsed, setCollapsed] = useState(false);
     const [popUpOpenDetails, setPopUpOpenDetails] = useState(false);
     const [popUpOpenEdit, setPopUpOpenEdit] = useState(false);
-    const [popUpOpenDelete, setPopUpOpenDelete] = useState(false);
+    const [popUpOpenCreate, setPopUpOpenCreate] = useState(false);
     const [categoria, setCategoria] = useState("all")
     const [itemSelect, setItemSelect] = useState();
     const {
@@ -56,8 +56,8 @@ function AdminPage() {
         setItemSelect(item)
     }
 
-    const handleDelete = (item) => {
-        setPopUpOpenDelete(true)
+    const handleCreate = (item) => {
+        setPopUpOpenCreate(true)
         setItemSelect(item)
     }
 
@@ -195,7 +195,7 @@ function AdminPage() {
                             ))}
                             {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => setPopUpOpenDetails(false)} />}
                             {popUpOpenEdit && <PopUpEdit item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
-                            {popUpOpenDelete && <PopUpConfig item={itemSelect} onClose={() => setPopUpOpenDelete(false)} />}
+                            
                         </Row>
 
                     </Content>
