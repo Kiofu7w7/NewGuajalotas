@@ -1,6 +1,10 @@
 import { Input, Modal, Popconfirm, Typography, Upload } from 'antd';
 import React, { useState } from 'react'
 import { DivFlexSpaceA } from './StyledComponents/Components';
+import { uploadFile } from '../../helpers/uploadFiles';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { PutDataUsersCarts } from '../../Peticiones/axios';
+import { urlComida } from '../../helpers/urls';
 
 function PopUpCreate(props) {
 
@@ -18,18 +22,72 @@ function PopUpCreate(props) {
     });
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [imageUrl, setImageUrl] = useState();
+    const [imagePlatoUrl, setImagePlatoUrl] = useState();
 
     const showPopconfirm = () => {
         setOpen(true);
     };
+
     const handleOk = () => {
         setConfirmLoading(true);
         setTimeout(async () => {
             setOpen(false);
             setConfirmLoading(false);
             onClose();
+            console.log(produc)
+            await PutDataUsersCarts(urlComida, produc)
         }, 2000);
     };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setOpen(false);
+    };
+
+    const handleUpload = (e) => {
+        console.warn(e.file.originFileObj)
+        setLoading(true)
+        const file = e.file.originFileObj
+        uploadFile(file)
+            .then(resp => handleChangeImagen(resp))
+    }
+
+    const handleChangeImagen = (url) => {
+        setProduct({
+            ...produc,
+            imagen: url,
+        })
+        setImageUrl(url)
+        setLoading(false)
+    };
+
+    const handleOnChange = ({ target }) => {
+        setProduct({
+            ...produc,
+            [target.name]: target.value,
+        });
+    };
+
+    const uploadButton = (
+        <button
+            style={{
+                border: 0,
+                background: 'none',
+            }}
+            type="button"
+        >
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div
+                style={{
+                    marginTop: 8,
+                }}
+            >
+                Upload
+            </div>
+        </button>
+    );
 
     return (
         <Modal
@@ -68,9 +126,9 @@ function PopUpCreate(props) {
                     <Typography.Title level={5}>Categoria:</Typography.Title>
                     <select
                         name="categoria"
-                        defaultValue={produc.categoria}
                         onChange={handleOnChange}
                     >
+                        <option value="">Seleccione una categoria</option>
                         {cats?.map((a, index) => (
                             <option key={index} value={a}>
                                 {a}
@@ -102,7 +160,7 @@ function PopUpCreate(props) {
                 </div>
             </DivFlexSpaceA>
 
-
+            <Typography.Title level={4}>Imagenes:</Typography.Title>
             <DivFlexSpaceA>
                 <div>
                     <Typography.Title level={5}>Fotografia:</Typography.Title>
@@ -149,6 +207,28 @@ function PopUpCreate(props) {
                     </Upload>
                 </div>
                 <div>
+                    <Typography.Title level={5}>Icono sabor: (no funciona)</Typography.Title>
+                    <Upload
+                        name="avatar"
+                        listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                    // onChange={handleUpload}
+                    >
+                        {imagePlatoUrl ? (
+                            <img
+                                src={imagePlatoUrl}
+                                alt="avatar"
+                                style={{
+                                    width: '100%',
+                                }}
+                            />
+                        ) : (
+                            uploadButton
+                        )}
+                    </Upload>
+                </div>
+                <div>
                     <Typography.Title level={5}>Foto final:</Typography.Title>
                     <img style={{
                         width: 100,
@@ -163,8 +243,8 @@ function PopUpCreate(props) {
             </DivFlexSpaceA>
 
             <Popconfirm
-                title="Title"
-                description="Open Popconfirm with async logic"
+                title="Confirmacion"
+                description="Esta seguro que desea crear este producto?"
                 open={open}
                 onConfirm={handleOk}
                 okButtonProps={{

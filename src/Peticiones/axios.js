@@ -82,7 +82,7 @@ export const DeleteDataUsersCarts = async (url, id) => {
 
 export const PutDataUsersCarts = async (url, data) => {
   try {
-    const resp = await axios.put(`${url}`, data);
+    const resp = await axios.post(`${url}`, data);
 
     if (resp.status === 200 || resp.status === 201) {
       return { status: "success", data: resp.data };

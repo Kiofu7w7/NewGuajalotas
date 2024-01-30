@@ -4,15 +4,16 @@ import {
     DeleteOutlined,
     EditOutlined,
     EllipsisOutlined,
+    EyeOutlined,
 } from '@ant-design/icons';
 import Meta from 'antd/es/card/Meta';
 import useProducts from '../Hooks/useProducts';
 import PopUpDetails from '../Components/AdminComponents/PopUpDetails';
 import PopUpEdit from '../Components/AdminComponents/PopUpEdit';
-import PopUpConfig from '../Components/AdminComponents/PopUpConfig';
 import { WarningOutlined } from '@ant-design/icons';
 import { DeleteDataUsersCarts } from '../Peticiones/axios';
 import { urlComida } from '../helpers/urls';
+import PopUpCreate from '../Components/AdminComponents/PopUpCreate';
 const { confirm } = Modal;
 
 const { Header, Content, Sider } = Layout;
@@ -106,8 +107,11 @@ function AdminPage() {
                         <Menu.Item key={0} onClick={() => { setCategoria("all") }}>
                             <span style={{ textTransform: "capitalize" }} >all</span>
                         </Menu.Item>
+                        <Menu.Item style={{ backgroundColor: "green" }} key={1} onClick={() => { handleCreate()}}>
+                            <span style={{ textTransform: "capitalize" }} >Crear Producto</span>
+                        </Menu.Item>
                         {categoriasData?.map((a, index) => (
-                            <Menu.Item key={index+1} onClick={() => { setCategoria (a)}}> 
+                            <Menu.Item key={index+2} onClick={() => { setCategoria (a)}}> 
                                 <span style={{ textTransform: "capitalize" }} >{a}</span> 
                             </Menu.Item>
                         ))}
@@ -147,7 +151,7 @@ function AdminPage() {
                                                 />
                                             }
                                             actions={[
-                                                <EllipsisOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
+                                                <EyeOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
                                                 <EditOutlined style={{ backgroundColor: "#faea0c" }} onClick={() => handleEdit(item)} key="edit" />,
                                                 <DeleteOutlined style={{ backgroundColor: "red" }} onClick={() => showDeleteConfirm(item)} key="setting" />,
                                             ]}
@@ -180,7 +184,7 @@ function AdminPage() {
                                             />
                                         }
                                         actions={[
-                                            <EllipsisOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
+                                            <EyeOutlined onClick={() => handleDetails(item)} key="ellipsis" />,
                                             <EditOutlined style={{ backgroundColor: "#faea0c" }} onClick={() => handleEdit(item)} key="edit" />,
                                             <DeleteOutlined style={{ backgroundColor: "red" }} onClick={() => showDeleteConfirm(item)} key="setting" />,
                                         ]}
@@ -195,7 +199,7 @@ function AdminPage() {
                             ))}
                             {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => setPopUpOpenDetails(false)} />}
                             {popUpOpenEdit && <PopUpEdit item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
-                            
+                            {popUpOpenCreate && <PopUpCreate item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenCreate(false)} />}
                         </Row>
 
                     </Content>
