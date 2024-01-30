@@ -26,11 +26,13 @@ function useUser() {
 
                 if (data) {
                     let productsInCartData = []
-                    data.map(item => {
-                        if (productIds.includes(`${item.id}`)) {
-                            productsInCartData.push(item)
-                        }
-                        return null;
+
+                    productIds.map(e => {
+                        data.map(i => {
+                            if (e  === i.id.toString()) {
+                                productsInCartData.push(i)
+                            }
+                        })
                     })
 
                     setCartItems(productsInCartData);

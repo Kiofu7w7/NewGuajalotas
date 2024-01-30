@@ -1,5 +1,5 @@
 import axios from "axios"
-import { urlCarritos } from "../helpers/urls";
+import { urlCarritos, urlCopias } from "../helpers/urls";
 
 
 export const GetData = async (url) => {
@@ -80,6 +80,20 @@ export const DeleteDataUsersCarts = async (url, id) => {
     }
 };
 
+export const DeleteCopyDataUsersCarts = async (url, id,  copyObj) => {
+  try {
+    const copy = await axios.post(`${urlCopias}`, copyObj);
+    const resp = await axios.delete(`${url}/${id}`);
+    if (resp.status === 204 && copy.status === 204) {
+      return { status: "success" };
+    } else {
+      throw new Error(`Delete request failed with status ${resp.status}`);
+    }
+  } catch (error) {
+    return { status: "error", message: error.message };
+  }
+};
+
 export const PutDataUsersCarts = async (url, data) => {
   try {
     const resp = await axios.post(`${url}`, data);
@@ -111,12 +125,48 @@ export const AgregarItemCarrito = async (id, idProducto, cant) => {
     });
 
     if (!newProp.some((item) => item.startsWith(idProducto.toString()))) {
-      newProp.push(`${idProducto}:${cant}`); 
+      newProp.push(`${idProducto}:${cant}`);
     }
 
     resp.data.id_products = newProp.join("|");
     console.log(resp.data.id_products)
-    //await axios.put(`${urlCarritos}/${id}`, resp.data); // Update server
+    if (resp.data.id_products && resp.data.id_products.split("")[0] === "|") {
+      resp.data.id_products = resp.data.id_products.substring(1);
+    }
+    await axios.put(`${urlCarritos}/${id}`, resp.data); // Update server
+
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const EliminarItemCarrito = async (id, idProducto) => {
+  try {
+    const resp = await axios.get(`${urlCarritos}/${id}`);
+    const idProductsArray = resp.data.id_products.split("|");
+
+    const newProp = idProductsArray.filter((item) => {
+      let itemSplit = item.split(":");
+      return parseInt(itemSplit[0]) !== parseInt(idProducto);
+    });
+
+    resp.data.id_products = newProp.join("|");
+    console.log(resp.data.id_products)
+    await axios.put(`${urlCarritos}/${id}`, resp.data); // Update server
+
+    return resp.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const VaciarCarrito = async (id) => {
+  try {
+    const resp = await axios.get(`${urlCarritos}/${id}`);
+
+    resp.data.id_products = "";
+    await axios.put(`${urlCarritos}/${id}`, resp.data); // Update server
 
     return resp.data;
   } catch (error) {

@@ -79,6 +79,7 @@ function DetailsProduct() {
                     })
                 );
             }
+            navigate("/")
         } catch (error) {
             throw error
         }

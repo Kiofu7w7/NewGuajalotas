@@ -1,14 +1,14 @@
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Input, InputNumber, Modal, Popconfirm, Select, Typography, Upload, message } from 'antd';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { uploadFile } from '../../helpers/uploadFiles';
 import { DivFlexSpaceA } from './StyledComponents/Components';
 import { PatchDataUsersCarts } from '../../Peticiones/axios';
-import { urlComida } from '../../helpers/urls';
+import { urlBase } from '../../helpers/urls';
 
 function PopUpEdit(props) {
 
-    const { item, cats, onClose } = props;
+    const { item, baseData , cats, onClose } = props;
     const [produc, setProduct] = useState(props.item);
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState(item.imagen);
@@ -16,6 +16,11 @@ function PopUpEdit(props) {
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const [base, setBase] = useState();
+
+    useEffect(()=>{
+        setBase(baseData)
+    }, [baseData])
     
     const success = () => {
         messageApi.open({
@@ -34,7 +39,7 @@ function PopUpEdit(props) {
             setOpen(false);
             setConfirmLoading(false);
             onClose();
-            await PatchDataUsersCarts(urlComida, produc.id, produc)
+            await PatchDataUsersCarts(`${urlBase}${base}`, produc.id, produc)
             success()
         }, 2000);
     };
@@ -45,7 +50,6 @@ function PopUpEdit(props) {
     };
 
     const handleUpload = (e) => {
-        console.warn(e.file.originFileObj)
         setLoading(true)
         const file = e.file.originFileObj
         uploadFile(file)
@@ -220,8 +224,8 @@ function PopUpEdit(props) {
             </DivFlexSpaceA>
 
             <Popconfirm
-                title="Title"
-                description="Open Popconfirm with async logic"
+                title="Editar producto"
+                description="Estas seguro de editar este producto?"
                 open={open}
                 onConfirm={handleOk}
                 okButtonProps={{

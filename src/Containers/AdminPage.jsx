@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar, Card, Col, Layout, Menu, Modal, Row, theme } from 'antd';
 import {
     DeleteOutlined,
     EditOutlined,
-    EllipsisOutlined,
     EyeOutlined,
 } from '@ant-design/icons';
 import Meta from 'antd/es/card/Meta';
@@ -11,41 +10,30 @@ import useProducts from '../Hooks/useProducts';
 import PopUpDetails from '../Components/AdminComponents/PopUpDetails';
 import PopUpEdit from '../Components/AdminComponents/PopUpEdit';
 import { WarningOutlined } from '@ant-design/icons';
-import { DeleteDataUsersCarts } from '../Peticiones/axios';
-import { urlComida } from '../helpers/urls';
+import { DeleteCopyDataUsersCarts, DeleteDataUsersCarts } from '../Peticiones/axios';
+import { urlComida, urlCopias } from '../helpers/urls';
 import PopUpCreate from '../Components/AdminComponents/PopUpCreate';
+import { useNavigate } from 'react-router-dom';
+import useNoDis from '../Hooks/useNoDis';
 const { confirm } = Modal;
 
 const { Header, Content, Sider } = Layout;
-const items1 = [
-    {
-        "key": "1",
-        "label": "Productos"
-    },
-    {
-        "key": "2",
-        "label": "Usuarios"
-    },
-    {
-        "key": "3",
-        "label": "Carritos"
-    }
-]
 
 function AdminPage() {
     const { data } = useProducts();
-    const [collapsed, setCollapsed] = useState(false);
+    const { dataNoDis } = useNoDis();
+    const [dataNoDis2, setDataNoDis2] = useState();
     const [popUpOpenDetails, setPopUpOpenDetails] = useState(false);
     const [popUpOpenEdit, setPopUpOpenEdit] = useState(false);
     const [popUpOpenCreate, setPopUpOpenCreate] = useState(false);
     const [categoria, setCategoria] = useState("all")
     const [itemSelect, setItemSelect] = useState();
+    const [base, setBase] = useState("comidas");
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
-
-    const categoriasData = [...new Set(data?.map((item) => item.categoria))];
-
+    const navigate = useNavigate()
+    const categoriasData = [...new Set(dataNoDis2?.map((item) => item.categoria))];
     
     const handleDetails = (item) => {
         setPopUpOpenDetails(true)
@@ -62,6 +50,10 @@ function AdminPage() {
         setItemSelect(item)
     }
 
+    useEffect(()=>{
+        setDataNoDis2(data)
+    },[data])
+
     const showDeleteConfirm = (c) => {
         confirm({
             title: '¿Estas seguro de eliminar este producto?',
@@ -71,7 +63,12 @@ function AdminPage() {
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-                DeleteDataUsersCarts(urlComida, c.id)
+                if (base === "comidas") {
+                    console.log("dsasdasd")
+                    DeleteCopyDataUsersCarts(urlComida, c.id, c)
+                }else if(base === "discount"){
+                    DeleteDataUsersCarts(urlCopias, c.id)
+                }
             },
             onCancel() {
                 console.log('Cancel');
@@ -92,26 +89,39 @@ function AdminPage() {
                     theme="dark"
                     mode="horizontal"
                     defaultSelectedKeys={['1']}
-                    items={items1}
                     style={{
                         flex: 1,
                         minWidth: 0,
                     }}
                 >
-                    
+                    <Menu.Item style={{ backgroundColor: "#FA4A0C" }} key={0} onClick={() => { navigate("/home") }}>
+                        <span style={{ textTransform: "capitalize" }} >HOME</span>
+                    </Menu.Item>
+                    <Menu.Item key={1} onClick={() => { setDataNoDis2(data); setBase("comidas")}}>
+                        <span style={{ textTransform: "capitalize" }} >Productos</span>
+                    </Menu.Item>
+                    <Menu.Item key={2} onClick={() => { setDataNoDis2(dataNoDis); setBase("discount") }}>
+                        <span style={{ textTransform: "capitalize" }} >Descontinuados</span>
+                    </Menu.Item>
+                    <Menu.Item key={3}>
+                        <span style={{ textTransform: "capitalize" }} >Usuarios(falta)</span>
+                    </Menu.Item>
+                    <Menu.Item key={4}>
+                        <span style={{ textTransform: "capitalize" }} >Carritos(falta)</span>
+                    </Menu.Item>
                 </Menu>
             </Header>
             <Layout>
-                <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                    <Menu theme="dark" mode="inline">
-                        <Menu.Item key={0} onClick={() => { setCategoria("all") }}>
-                            <span style={{ textTransform: "capitalize" }} >all</span>
-                        </Menu.Item>
+                <Sider>
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['0']}>
                         <Menu.Item style={{ backgroundColor: "green" }} key={1} onClick={() => { handleCreate()}}>
                             <span style={{ textTransform: "capitalize" }} >Crear Producto</span>
                         </Menu.Item>
+                        <Menu.Item key={0} onClick={() => { setCategoria("all"); setDataNoDis2(data); }}>
+                            <span style={{ textTransform: "capitalize" }} >all</span>
+                        </Menu.Item>
                         {categoriasData?.map((a, index) => (
-                            <Menu.Item key={index+2} onClick={() => { setCategoria (a)}}> 
+                            <Menu.Item key={index+3} onClick={() => { setCategoria (a)}}> 
                                 <span style={{ textTransform: "capitalize" }} >{a}</span> 
                             </Menu.Item>
                         ))}
@@ -133,7 +143,7 @@ function AdminPage() {
                     >
                         <Row gutter={16}>
                             {categoria === "all" && (
-                                data?.map((item, index) => (
+                                dataNoDis2?.map((item, index) => (
                                     <Col span={8} key={index}>
                                         <Card
                                             style={{
@@ -165,7 +175,7 @@ function AdminPage() {
                                     </Col>
                                 ))
                             )}
-                            {data?.filter((product) => product.categoria === categoria).map((item, index) => (
+                            {dataNoDis2?.filter((product) => product.categoria === categoria).map((item, index) => (
                                 <Col span={8} key={index}>
                                     <Card
                                         style={{
@@ -198,8 +208,8 @@ function AdminPage() {
                                 </Col>
                             ))}
                             {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => setPopUpOpenDetails(false)} />}
-                            {popUpOpenEdit && <PopUpEdit item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
-                            {popUpOpenCreate && <PopUpCreate item={itemSelect} cats={categoriasData} onClose={() => setPopUpOpenCreate(false)} />}
+                            {popUpOpenEdit && <PopUpEdit item={itemSelect} baseData={base} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
+                            {popUpOpenCreate && <PopUpCreate item={itemSelect} baseData={base} cats={categoriasData} onClose={() => setPopUpOpenCreate(false)} />}
                         </Row>
 
                     </Content>

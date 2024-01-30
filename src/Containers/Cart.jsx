@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react'
 import useUser from '../Hooks/useUser'
 import { useNavigate } from 'react-router-dom';
 import { ButtonAS, CartItemText, CartPriceText, CartTotalDiv, DivButtonAS, DivContadorCart, ImagenProducto, NoCartItemsIcon, TextButtonAS, TitlePages } from '../Components/StyleComponentsCart';
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { AgregarItemCarrito } from '../Peticiones/axios';
+import { AgregarItemCarrito, EliminarItemCarrito } from '../Peticiones/axios';
 import { UserContext } from '../Hooks/userContext';
 
 function Cart() {
@@ -26,15 +26,18 @@ function Cart() {
         setContCarrito(parseInt(cant))
     };
     const handleOk = (cant, producto) => {
-        console.log(cant, producto.id)
         AgregarItemCarrito(user.id_carts, producto.id, cant)
         setOpen(false);
     };
     const handleCancel = (e) => {
-        console.log(e);
         setOpen(false);
-        console.warn(cartItems)
     };
+
+    const handleEliminar = (e) => {
+        EliminarItemCarrito(user.id_carts, e.id)
+        setOpen(false);
+
+    }
 
     const [contCarrito, setContCarrito] = useState(1);
 
@@ -63,7 +66,7 @@ function Cart() {
                 <TitlePages>Carrito</TitlePages>
             </div>
 
-            {cartItems ? (
+            {cartItems && cartItems.length > 0 ? (
                 <div
                     style={{
                         width: "100%",
@@ -165,7 +168,20 @@ function Cart() {
                                 fontWeight: 600
                             }
                         }}
-                        style={{ width: 312 }}>
+                        style={{ width: 312 }}
+                        footer={[
+                            // Add the "Eliminar" button to the footer
+                            <Button key="delete" onClick={() => { handleEliminar(dataProdcuto) }}>
+                                Eliminar
+                            </Button>,
+                            <Button key="cancel" onClick={handleCancel}>
+                                Cancelar
+                            </Button>,
+                            <Button key="ok" type="primary" onClick={() => handleOk(contCarrito, dataProdcuto)}>
+                                Actualizar
+                            </Button>,
+                        ]}
+                        >
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", }}>
                             <img src={dataProdcuto?.imagen} alt='' style={{
                                 width: 80, height: 80, objectFit: "contain", backgroundImage: `url(${dataProdcuto?.plato})`,
@@ -204,7 +220,7 @@ function Cart() {
                         style={{
                             width: "113.128px",
                             height: "107.986px",
-                            marginTop: "70%",
+                            marginTop: "20%",
                             marginBottom: "auto",
                         }}
                         src="https://res.cloudinary.com/dlwr6vxib/image/upload/v1705961405/Guajolota/Group_66_ughrn8.png"

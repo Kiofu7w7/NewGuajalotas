@@ -1,14 +1,14 @@
 import { Input, Modal, Popconfirm, Typography, Upload } from 'antd';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DivFlexSpaceA } from './StyledComponents/Components';
 import { uploadFile } from '../../helpers/uploadFiles';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { PutDataUsersCarts } from '../../Peticiones/axios';
-import { urlComida } from '../../helpers/urls';
+import { urlBase } from '../../helpers/urls';
 
 function PopUpCreate(props) {
 
-    const { item, cats, onClose } = props;
+    const { item, baseData, cats, onClose } = props;
     const [produc, setProduct] = useState({
         id: crypto.randomUUID(),
         nombre: "",
@@ -25,6 +25,12 @@ function PopUpCreate(props) {
     const [loading, setLoading] = useState(false);
     const [imageUrl, setImageUrl] = useState();
     const [imagePlatoUrl, setImagePlatoUrl] = useState();
+    const [base, setBase] = useState();
+
+    useEffect(() => {
+        setBase(baseData)
+    }, [baseData])
+
 
     const showPopconfirm = () => {
         setOpen(true);
@@ -37,7 +43,7 @@ function PopUpCreate(props) {
             setConfirmLoading(false);
             onClose();
             console.log(produc)
-            await PutDataUsersCarts(urlComida, produc)
+            await PutDataUsersCarts(`${urlBase}${base}`, produc)
         }, 2000);
     };
 

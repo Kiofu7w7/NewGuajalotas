@@ -3,6 +3,9 @@ import useUser from '../Hooks/useUser';
 import { UserContext } from '../Hooks/userContext';
 import "../Styles/StylePasarela.css";
 import { ContainerDetalles, ContainerMetodoPago, ContainerPago, ContainerPasarela, ContiarnetDatos, DivMetodoPago, FondoContainer, ImagenMetodoPago } from '../Components/StyleCompPasarela';
+import { Modal } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { VaciarCarrito } from '../Peticiones/axios';
 
 function Pasarela() {
 
@@ -12,6 +15,25 @@ function Pasarela() {
 
     let total = 0;
     cartItems.map((a, index) => total += a.precio * productNumbers[index])
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+        VaciarCarrito(user.id_carts)
+        navigate("/")
+    };
+
+    const handleCancel = () => {
+        navigate("/")
+        setIsModalOpen(false);
+    };
+
+    const navigate = useNavigate()
 
 
     return (
@@ -87,9 +109,12 @@ function Pasarela() {
                             </div>
                         </div>
                     </div>
-                    <button className="purchase--btn">Pagar</button>
+                    <button onClick={showModal} className="purchase--btn">Pagar</button>
                 </ContainerPago>
             </ContainerPasarela>
+            <Modal title="Comfirmar compra" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <h1>Gracias por tu compra</h1>
+            </Modal>
         </FondoContainer>
     )
 }
