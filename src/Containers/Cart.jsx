@@ -11,14 +11,12 @@ function Cart() {
 
     const { cartItems, productNumbers } = useUser();
     const { user } = useContext(UserContext)
-
+    const [contCarrito, setContCarrito] = useState(1);
+    const navigate = useNavigate();
+    const [dataProdcuto, setDataProducto] = useState()
+    const [open, setOpen] = useState(false);
     let total = 0;
     cartItems.map((a, index) => total += a.precio * productNumbers[index])
-
-    const navigate = useNavigate();
-
-    const [open, setOpen] = useState(false);
-    const [dataProdcuto, setDataProducto] = useState()
 
     const showModal = (item, cant) => {
         setOpen(true);
@@ -38,8 +36,6 @@ function Cart() {
         setOpen(false);
 
     }
-
-    const [contCarrito, setContCarrito] = useState(1);
 
     const handlePlusCarrito = () => {
         setContCarrito(contCarrito + 1)
@@ -153,34 +149,21 @@ function Cart() {
                         onOk={() => handleOk(contCarrito, dataProdcuto)}
                         onCancel={handleCancel}
                         okText="Actualizar"
-                        okButtonProps={{
-                            style: {
-                                order: "-1", margin: 0, color: "#F6F6F9", border: "none",
-                                backgroundColor: "#FA4A0C", borderRadius: 40, padding: "12px 24px", height: "auto", fontSize: 17,
-                                fontWeight: 600
-                            }
-                        }}
                         cancelText="Cancelar"
-                        cancelButtonProps={{
-                            style: {
-                                margin: 0, color: "#FA4A0C", border: "none",
-                                backgroundColor: "transparent", borderRadius: 40, padding: "12px 24px", height: "auto", fontSize: 17,
-                                fontWeight: 600
-                            }
-                        }}
                         style={{ width: 312 }}
-                        footer={[
-                            // Add the "Eliminar" button to the footer
-                            <Button key="delete" onClick={() => { handleEliminar(dataProdcuto) }}>
-                                Eliminar
-                            </Button>,
-                            <Button key="cancel" onClick={handleCancel}>
-                                Cancelar
-                            </Button>,
-                            <Button key="ok" type="primary" onClick={() => handleOk(contCarrito, dataProdcuto)}>
-                                Actualizar
-                            </Button>,
-                        ]}
+                        footer={(
+                            <div style={{display: "flex",  justifyContent: 'center', flexDirection: "column"}}>
+                                <Button key="delete" style={{ borderRadius: 40, padding: "12px 24px", height: "auto" }} onClick={() => { handleEliminar(dataProdcuto) }}>
+                                    Eliminar
+                                </Button>
+                                <Button key="ok" style={{ backgroundColor: "#FA4A0C", color: "white", borderRadius: 40, padding: "12px 24px", height: "auto" }} onClick={() => handleOk(contCarrito, dataProdcuto)}>
+                                    Actualizar
+                                </Button>
+                                <Button key="cancel" style={{ borderRadius: 40, padding: "12px 24px", height: "auto" }} onClick={handleCancel}>
+                                    Cancelar
+                                </Button>
+                            </div>
+                        )}
                         >
                         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", }}>
                             <img src={dataProdcuto?.imagen} alt='' style={{

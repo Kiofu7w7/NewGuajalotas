@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { AgregarItemCarrito, GetData } from '../Peticiones/axios';
 import { urlComida } from '../helpers/urls';
-import { BotonAgregarCarrito, ContenedorItemsExtra, DivBotonAgregarCarrito, DivContadorCart, DivItemsExtra, DivSabores, DivTituloPrecio, ParrafoTitulo, PrecioDeDetails, TextoItemsExtra, TituloDeDetails, Titulos } from '../Components/StyleComponentsDetails';
+import { BotonAgregarCarrito, ContenedorItemsExtra, DivBotonAgregarCarrito, DivContadorCart, DivItemsExtra, DivSabores, DivTituloPrecio, ParrafoTitulo,
+        PrecioDeDetails, TextoItemsExtra, TituloDeDetails, Titulos } from '../Components/StyleComponentsDetails';
 import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import useProducts from '../Hooks/useProducts';
 import { UserContext } from '../Hooks/userContext';
@@ -208,8 +209,8 @@ function DetailsProduct() {
                     )
                 }
             </ContenedorItemsExtra>
-            <DivBotonAgregarCarrito onClick={() => {handleComprar()}}>
-                <BotonAgregarCarrito>
+            <DivBotonAgregarCarrito>
+                <BotonAgregarCarrito onClick={() => { handleComprar() }}>
                     <p style={{ margin: 0 }}>Agregar {contCarrito} al carrito</p>
                     <p style={{ margin: 0 }}>
                         ${total}.00

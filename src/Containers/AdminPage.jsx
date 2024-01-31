@@ -117,7 +117,7 @@ function AdminPage() {
                         <Menu.Item style={{ backgroundColor: "green" }} key={1} onClick={() => { handleCreate()}}>
                             <span style={{ textTransform: "capitalize" }} >Crear Producto</span>
                         </Menu.Item>
-                        <Menu.Item key={0} onClick={() => { setCategoria("all"); setDataNoDis2(data); }}>
+                        <Menu.Item key={0} onClick={() => { setCategoria("all"); }}>
                             <span style={{ textTransform: "capitalize" }} >all</span>
                         </Menu.Item>
                         {categoriasData?.map((a, index) => (

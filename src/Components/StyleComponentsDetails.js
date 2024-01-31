@@ -106,13 +106,13 @@ export const TextoItemsExtra = styled.p`
 
 export const DivBotonAgregarCarrito = styled.div`
   position: fixed;
-  left: 0;
   bottom: 0;
   width: 100%;
+  justify-content: center;
   display: inline-flex;
   margin: 16px 24px;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   background: rgba(242, 242, 242, 0.01);
   backdrop-filter: blur(24px);
