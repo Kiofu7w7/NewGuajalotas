@@ -41,9 +41,9 @@ function PopUpCreate(props) {
         setTimeout(async () => {
             setOpen(false);
             setConfirmLoading(false);
-            onClose();
-            console.log(produc)
-            await PutDataUsersCarts(`${urlBase}${base}`, produc)
+            await PutDataUsersCarts(`${urlBase}${base}`, produc).then(()=>{
+                onClose();
+            })
         }, 2000);
     };
 

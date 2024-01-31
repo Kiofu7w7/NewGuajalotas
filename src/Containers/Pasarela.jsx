@@ -78,13 +78,13 @@ function Pasarela() {
                 <ContainerPago>
                     <ContainerMetodoPago>
                         <DivMetodoPago className='Civica'>
-                            <ImagenMetodoPago alt='nequiLogo' src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1706314810/Guajolota/logo-Nequi_by_Bancolombia_jyq3jf.png'></ImagenMetodoPago>
+                            <ImagenMetodoPago onClick={showModal} alt='nequiLogo' src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1706314810/Guajolota/logo-Nequi_by_Bancolombia_jyq3jf.png'></ImagenMetodoPago>
                         </DivMetodoPago>
                         <DivMetodoPago className='DaviPlata'>
-                            <ImagenMetodoPago alt='nequiLogo' src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1706314809/Guajolota/daviplata-logo_gpeent.webp'></ImagenMetodoPago>
+                            <ImagenMetodoPago onClick={showModal} alt='nequiLogo' src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1706314809/Guajolota/daviplata-logo_gpeent.webp'></ImagenMetodoPago>
                         </DivMetodoPago>
                         <DivMetodoPago className='Nu'>
-                            <ImagenMetodoPago alt='nequiLogo' src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1706314810/Guajolota/Nubank_logo_2021.svg_ngtogk.png'></ImagenMetodoPago>
+                            <ImagenMetodoPago onClick={showModal} alt='nequiLogo' src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1706314810/Guajolota/Nubank_logo_2021.svg_ngtogk.png'></ImagenMetodoPago>
                         </DivMetodoPago>
                     </ContainerMetodoPago>
                     <div style={{ marginTop: "20px" }} className="separator">

@@ -6,6 +6,7 @@ function useProducts() {
   const [data, setData] = useState();
   const [categoriaData, setCategoriaData] = useState();
   const [dataSelectProduct, setDataSelectProduct] = useState()
+  const [datosP, setDatosP] = useState(false);
 
   useEffect(() => {
     async function cargarDatos() {
@@ -13,7 +14,7 @@ function useProducts() {
       setData(resp); 
     }
     cargarDatos();
-  }, []);
+  }, [datosP]);
 
   const handleCambiarC = (index) => {
     setCategoriaData(data[index])
@@ -23,7 +24,7 @@ function useProducts() {
     setDataSelectProduct(categoriaData.contenido[index])
   }
 
-  return { data, categoriaData, dataSelectProduct, handleCambiarC, handleCambiarP};
+  return { data, categoriaData, dataSelectProduct, handleCambiarC, handleCambiarP, datosP, setDatosP };
 }
 
 export default useProducts;

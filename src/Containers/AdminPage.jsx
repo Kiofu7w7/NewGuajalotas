@@ -20,7 +20,7 @@ const { confirm } = Modal;
 const { Header, Content, Sider } = Layout;
 
 function AdminPage() {
-    const { data } = useProducts();
+    const { data, datosP, setDatosP } = useProducts();
     const { dataNoDis } = useNoDis();
     const [dataNoDis2, setDataNoDis2] = useState();
     const [popUpOpenDetails, setPopUpOpenDetails] = useState(false);
@@ -29,11 +29,16 @@ function AdminPage() {
     const [categoria, setCategoria] = useState("all")
     const [itemSelect, setItemSelect] = useState();
     const [base, setBase] = useState("comidas");
+    const [pan, setPan] = useState(false)
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
     const navigate = useNavigate()
     const categoriasData = [...new Set(dataNoDis2?.map((item) => item.categoria))];
+
+    useEffect(() => {
+        setDatosP(!datosP)
+    }, [pan])
     
     const handleDetails = (item) => {
         setPopUpOpenDetails(true)
@@ -65,7 +70,10 @@ function AdminPage() {
             onOk() {
                 if (base === "comidas") {
                     console.log("dsasdasd")
-                    DeleteCopyDataUsersCarts(urlComida, c.id, c)
+                    DeleteCopyDataUsersCarts(urlComida, c.id, c).then(()=>{
+                        setDatosP(!datosP)
+                        setPan(!pan);
+                    })
                 }else if(base === "discount"){
                     DeleteDataUsersCarts(urlCopias, c.id)
                 }
@@ -207,9 +215,9 @@ function AdminPage() {
                                     </Card>
                                 </Col>
                             ))}
-                            {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => setPopUpOpenDetails(false)} />}
-                            {popUpOpenEdit && <PopUpEdit item={itemSelect} baseData={base} cats={categoriasData} onClose={() => setPopUpOpenEdit(false)} />}
-                            {popUpOpenCreate && <PopUpCreate item={itemSelect} baseData={base} cats={categoriasData} onClose={() => setPopUpOpenCreate(false)} />}
+                            {popUpOpenDetails && <PopUpDetails item={itemSelect} onClose={() => { setPopUpOpenDetails(false); setPan(!pan); setDatosP(!datosP)}} />}
+                            {popUpOpenEdit && <PopUpEdit item={itemSelect} baseData={base} cats={categoriasData} onClose={() => { setPopUpOpenEdit(false); setPan(!pan); setDatosP(!datosP) }} />}
+                            {popUpOpenCreate && <PopUpCreate item={itemSelect} baseData={base} cats={categoriasData} onClose={() => { setPopUpOpenCreate(false); setPan(!pan); setDatosP(!datosP) }} />}
                         </Row>
 
                     </Content>

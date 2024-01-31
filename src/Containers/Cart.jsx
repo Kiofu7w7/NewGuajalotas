@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useUser from '../Hooks/useUser'
 import { useNavigate } from 'react-router-dom';
 import { ButtonAS, CartItemText, CartPriceText, CartTotalDiv, DivButtonAS, DivContadorCart, ImagenProducto, NoCartItemsIcon, TextButtonAS, TitlePages } from '../Components/StyleComponentsCart';
@@ -9,33 +9,52 @@ import { UserContext } from '../Hooks/userContext';
 
 function Cart() {
 
-    const { cartItems, productNumbers } = useUser();
+    const { cartItems, productNumbers, datosC, setDatosC } = useUser();
     const { user } = useContext(UserContext)
     const [contCarrito, setContCarrito] = useState(1);
     const navigate = useNavigate();
     const [dataProdcuto, setDataProducto] = useState()
     const [open, setOpen] = useState(false);
+    const [pan, setPan] = useState(false)
     let total = 0;
     cartItems.map((a, index) => total += a.precio * productNumbers[index])
+
+    useEffect(()=>{
+        setDatosC(!datosC)
+    },[pan])
 
     const showModal = (item, cant) => {
         setOpen(true);
         setDataProducto(item)
         setContCarrito(parseInt(cant))
     };
+
     const handleOk = (cant, producto) => {
-        AgregarItemCarrito(user.id_carts, producto.id, cant)
-        setOpen(false);
+        AgregarItemCarrito(user.id_carts, producto.id, cant).then(()=>{
+            setOpen(false);
+            setDatosC(!datosC);
+            setPan(!pan);
+        })
+        .catch((error) => {
+            console.error("Error removing item from cart:", error);
+        });
     };
+
     const handleCancel = (e) => {
         setOpen(false);
     };
 
     const handleEliminar = (e) => {
         EliminarItemCarrito(user.id_carts, e.id)
-        setOpen(false);
-
-    }
+            .then(() => {
+                setOpen(false);
+                setDatosC(!datosC);
+                setPan(!pan);
+            })
+            .catch((error) => {
+                console.error("Error removing item from cart:", error);
+            });
+    };
 
     const handlePlusCarrito = () => {
         setContCarrito(contCarrito + 1)

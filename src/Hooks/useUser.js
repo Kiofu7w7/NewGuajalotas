@@ -9,6 +9,7 @@ function useUser() {
     const [cartItems, setCartItems] = useState([]);
     const [productNumbers, setProductNumbers] = useState([]);
     const { data } = useProducts();
+    const [datosC, setDatosC] = useState(false);
 
     useEffect(() => {
         async function fetchUserData() {
@@ -21,7 +22,6 @@ function useUser() {
                 const productNumbersa = respCarts.id_products
                     .split('|')
                     .map(product => product.split(':')[1]);
-
                 setProductNumbers(Array.from(productNumbersa, Number));
 
                 if (data) {
@@ -43,9 +43,9 @@ function useUser() {
         }
 
         fetchUserData();
-    }, [data]);
+    }, [data, datosC]);
 
-    return { user, cartItems, productNumbers };
+    return { user, cartItems, productNumbers, datosC, setDatosC };
 }
 
 export default useUser;

@@ -37,10 +37,11 @@ function PopUpEdit(props) {
         setConfirmLoading(true);
         setTimeout(async () => {
             setOpen(false);
-            setConfirmLoading(false);
-            onClose();
-            await PatchDataUsersCarts(`${urlBase}${base}`, produc.id, produc)
-            success()
+            await PatchDataUsersCarts(`${urlBase}${base}`, produc.id, produc).then(()=>{
+                setConfirmLoading(false);
+                success()
+                onClose();
+            })
         }, 2000);
     };
 
