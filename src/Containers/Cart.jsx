@@ -49,7 +49,7 @@ function Cart() {
 
 
     return (
-        <div>
+        <div style={{padding: 20}}>
             <div>
                 <img
                     alt=""

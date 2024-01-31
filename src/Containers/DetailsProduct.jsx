@@ -95,7 +95,7 @@ function DetailsProduct() {
     };
 
     return (
-        <div>
+        <div style={{padding: 20}}>
             <div style={{display: "flex", width: "100%", justifyContent: "space-between"}}>
                 <img onClick={() => {navigate("/")}} style={{width: 24,height: 24, objectFit: "contain", cursor: "pointer"}} src='https://res.cloudinary.com/dlwr6vxib/image/upload/v1705706634/Guajolota/chevron-left_piq1vb.png' alt=''></img>
                 <img style={{width: 165.833, height: 155.865, objectFit: "contain"}} src={dataProduct?.imagen} alt=''></img>

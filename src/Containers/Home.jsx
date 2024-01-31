@@ -14,7 +14,7 @@ function Home() {
     
 
   return (
-    <div>
+    <div style={{padding: 20}}>
         <NavBarH/>
         <header>
             <h1
