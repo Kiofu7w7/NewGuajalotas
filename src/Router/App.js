@@ -8,6 +8,7 @@ import SigIn from "../Containers/SigIn";
 import Register from "../Containers/Register";
 import Pasarela from "../Containers/Pasarela";
 import AdminPage from "../Containers/AdminPage";
+import UserProfile from "../Containers/UserProfile";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/pasarela" element={<Pasarela />}></Route>
           <Route path="/adminPage" element={<AdminPage />}></Route>
+          <Route path="/user-profile" element={<UserProfile />}></Route>
           <Route path="*" element={<NothingHere />}></Route>
         </Routes>
       </BrowserRouter>

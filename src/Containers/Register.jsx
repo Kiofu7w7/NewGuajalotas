@@ -197,12 +197,12 @@ function Register() {
                             I have read the agreement
                         </Checkbox>
                     </Form.Item>
-                    <Form.Item {...tailFormItemLayout}>
+                    <div style={{width: "100%", display:"flex", justifyContent: "center"}}>
                         <Button style={{ backgroundColor: "#FA4A0C", color: "white", border: "none", outlineColor: "white" }} htmlType="submit">
                             Register
                         </Button>
-                    </Form.Item>
-                </Form>
+                    </div>
+                </Form> 
             </DivFondoDifumi>
         </FondoContainer>
     )

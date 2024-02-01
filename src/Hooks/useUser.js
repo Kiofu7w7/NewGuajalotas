@@ -10,10 +10,20 @@ function useUser() {
     const [productNumbers, setProductNumbers] = useState([]);
     const { data } = useProducts();
     const [datosC, setDatosC] = useState(false);
+    const [userMain, setUserMain] = useState({
+        "id": 1,
+        "email": "plaga500@hotmail.com",
+        "password": "colegio1",
+        "cellphone": "301234565",
+        "name": "Santiago",
+        "last_name": "Buitrago",
+        "id_carts": 1
+    });
 
     useEffect(() => {
         async function fetchUserData() {
             try {
+                
                 const respUser = await GetDataUsersCarts(urlUsuario, userIdPruebas);
                 setUser(respUser);
 
@@ -45,7 +55,7 @@ function useUser() {
         fetchUserData();
     }, [data, datosC]);
 
-    return { user, cartItems, productNumbers, datosC, setDatosC };
+    return { user, cartItems, productNumbers, datosC, setDatosC, userMain, setUserMain };
 }
 
 export default useUser;
