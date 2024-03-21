@@ -1,12 +1,12 @@
 pipeline {
   agent any
-  tools{
-    dockerTool "Docker"
+  tools {
+    dockerTool 'Docker'
   }
   stages {
     stage('Deploy') {
       steps {
-        sh '''docker run hello-world'''
+        sh 'docker run hello-world'
       }
     }
   }
