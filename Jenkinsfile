@@ -12,7 +12,7 @@ pipeline {
     }
     stage('Docker build') {
       steps {
-        sh 'docker run hello-world
+        sh 'docker run hello-world'
       }
     }
   }
