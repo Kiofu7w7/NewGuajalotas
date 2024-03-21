@@ -24,7 +24,7 @@ pipeline {
           sleep 100 // Wait for 100 seconds
         }
         timeout(time: 1, unit: 'HOURS') {
-          waitForQualityGate abortPipeline: true, timeout: 10, secondaryTimeout: 10, message: 'Waiting for SonarQube Quality Gate'
+          waitForQualityGate abortPipeline: true
         }
         sh 'echo "Quality gate passed successfully"'
       }
