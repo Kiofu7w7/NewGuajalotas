@@ -1,12 +1,18 @@
 pipeline {
   agent any
-  tools {
-    dockerTool 'Docker'
+  tools{
+    jdk 'OpenJDK'
+    maven 'mavenTool'
   }
   stages {
-    stage('Deploy') {
+    stage('Maven build') {
       steps {
-        sh 'docker run hello-world'
+        sh 'mvn clean install'
+      }
+    }
+    stage('Docker build') {
+      steps {
+        sh 'docker run hello-world
       }
     }
   }
