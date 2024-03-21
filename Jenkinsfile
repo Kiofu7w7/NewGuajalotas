@@ -6,7 +6,7 @@ pipeline {
   stages {
     stage('Deploy') {
       steps {
-        sh '''echo "Deployment is successful"'''
+        sh '''docker run hello-world'''
       }
     }
   }
