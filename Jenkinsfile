@@ -1,7 +1,7 @@
 pipeline {
   agent any
   tools{
-    mavenTool 'maven_3_5_0'
+    maven 'mavenTool'
   }
   stages {
     stage('Deploy') {
